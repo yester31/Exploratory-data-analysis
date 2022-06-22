@@ -45,8 +45,6 @@ class CocoAnalysis:
                     self.boxes_by_class[anno['category_id']] += 1
                     self.boxes_by_image[anno['image_id']] += 1
 
-
-
         else:  # anno_path 파일이 없다면
             print('Check the annotation file path!!!')
 
@@ -99,14 +97,10 @@ class CocoAnalysis:
     def show_img_id(self, img_id=0):
         img_instance = self.dic_imgid_img[img_id]
         image = cv2.imread(self.img_dir_path + img_instance['file_name'].split('/')[-1])
-
         for a_idx, anno in enumerate(self.dic_imgid_annos[img_instance['id']]):
             bb = anno['bbox']
-            image = cv2.rectangle(image, (int(bb[0]), int(bb[1])), (int(bb[0] + bb[2]), int(bb[1] + bb[3])),
-                                  color_map[(anno['category_id'] + 1) % len(color_map)], 2)
-
+            image = cv2.rectangle(image, (int(bb[0]), int(bb[1])), (int(bb[0] + bb[2]), int(bb[1] + bb[3])), color_map[(anno['category_id'] + 1) % len(color_map)], 2)
             class_name = self.dic_cateid_cate[anno['category_id']]['name']
-
             #print(anno['image_id'], anno['id'], anno['category_id'], class_name)
             cv2.putText(image, class_name, (int(bb[0]), int(bb[1])), cv2.FONT_HERSHEY_SIMPLEX, 1,
                         color_map[(anno['category_id'] + 1) % len(color_map)], 2)
@@ -119,11 +113,36 @@ class CocoAnalysis:
         x, y = zip(*image_list)
         plt.figure(figsize=(15, 10))
         plt.bar(np.arange(len(self.images)), y, width=1)
-        plt.yticks(np.arange(10) * max(self.dic_imgid_anno_cnt.values()) / 10, np.arange(10) * int(max(self.dic_imgid_anno_cnt.values()) / 10), fontsize=20)
+        plt.yticks(np.arange(10) * max(self.dic_imgid_anno_cnt.values()) / 10, np.arange(10) * int(max(self.dic_imgid_anno_cnt.values()) / 10), fontsize=15)
         plt.xticks(np.arange(10) * int(len(self.images) / 10), np.arange(10) * int(len(self.images) / 10), fontsize=15)
         plt.ylabel('The number of box', fontsize=15)
         plt.xlabel('Image', fontsize=15)
         plt.title('Distribution of boxes per image', fontsize=20)
+        plt.show()
+
+    # (sub) 입력 value와 가장 근접한 값과 인덱스 반환
+    def find_nearest(self, array, value):
+        array = np.asarray(array)
+        idx = (np.abs(array - value)).argmin()
+        return array[idx], idx
+
+    # 이미지 별로 바운딩 박스 개수를 (내림차순으로) 박스 차트로 출력
+    def show_bar_chart_box_by_image_descending(self):
+        rev_image_list = sorted(self.dic_imgid_anno_cnt.items(), reverse=True, key=lambda item: item[1])
+        x, y = zip(*rev_image_list)
+        # 평균 수직선 그리기
+        box_count_avg = sum(self.dic_imgid_anno_cnt.values()) / len(self.dic_imgid_anno_cnt)
+        _, nidx = self.find_nearest(y, box_count_avg)
+        plt.figure(figsize=(15, 10))
+        plt.vlines(nidx, 0, max(self.dic_imgid_anno_cnt.values()), color='red', linestyle='solid', linewidth=2)
+        plt.text(nidx + 10, int(box_count_avg), 'avg box count({:.2f})'.format(box_count_avg), color='red', fontsize=15)
+        # 바차트 그리기
+        plt.bar(np.arange(len(self.images)), y, width=1)
+        plt.yticks(np.arange(10) * max(self.dic_imgid_anno_cnt.values()) / 10, np.arange(10) * int(max(self.dic_imgid_anno_cnt.values()) / 10),fontsize=15)
+        plt.xticks(np.arange(10) * len(self.images) / 10, ['00%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%'], fontsize=15)
+        plt.ylabel('The number of box', fontsize=15)
+        plt.xlabel('Image', fontsize=15)
+        plt.title('Distribution of boxes per image(descending order)', fontsize=20)
         plt.show()
 
     # 클래스 별로 바운딩 박스 개수를 박스 차트로 출력
@@ -147,4 +166,5 @@ if __name__ == "__main__":
     #coco.show_random_img_class()
     #coco.show_img_id()
     #coco.show_bar_chart_box_by_class()
-    coco.show_bar_chart_box_by_image()
+    #coco.show_bar_chart_box_by_image()
+    coco.show_bar_chart_box_by_image_descending()
