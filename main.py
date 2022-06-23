@@ -18,6 +18,10 @@ if __name__ == "__main__":
     coco.show_random_img_class(2)
     # 특정 이미지 아이디의 이미지 출력
     coco.show_img_id(0)
+    # 바운딩 박스 크기순으로 상위 5개 출력
+    coco.show_big_annos()
+    # 바운딩 박스 크기순으로 하위 5개 출력
+    coco.show_small_annos()
 
     # 2. 차트 표현
     # 클래스 별 바운딩 박스의 개수를 바 차트로 출력
