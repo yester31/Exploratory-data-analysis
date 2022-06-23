@@ -13,7 +13,7 @@ color_map = [(244, 67, 54), (233, 30, 99), (156, 39, 176), (103, 58, 183), (63, 
 class CocoAnalysis:
     def __init__(self, anno_path, img_dir_path):
         print('init CocoAnalysis')
-        
+
         self.img_dir_path = img_dir_path
         if os.path.isfile(anno_path):  # anno_path 파일이 있다면
             with open(anno_path, 'rt', encoding='UTF-8') as annotations:
