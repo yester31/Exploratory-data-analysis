@@ -20,29 +20,30 @@
 - Show 5 random images with annotation
 
       coco.show_random_img_all()
+  ![](outputs/random_5_images.png)
 
 - Show 5 random images with only specific class annotation
 
-      coco.show_random_img_class(0) # 0 <- class index
-
+      coco.show_random_img_class(2) # 2 <- class index
+  ![](outputs/random_5_images_with_car_anno.png)
 - Show an image of specific image id
 
       coco.show_img_id(0) # 0 <- image index
-
+  ![](outputs/image_id_0.png)
 
 ## 2. Data chart
 - Bar chart of the number of bounding box by class
       
       coco.show_bar_chart_box_by_class()
-
+  ![](outputs/bar_chart_box_by_class.png)
 - Bar chart of the number of bounding box by image
 
       coco.show_bar_chart_box_by_image() 
-
+  ![](outputs/bar_chart_box_by_image.png)
 - Bar chart of the number of bounding box descended by image 
 
       coco.show_bar_chart_box_by_image_descending()
-
+  ![](outputs/bar_chart_box_by_image_descending.png)
 
 ## 3. Dataset edit
 

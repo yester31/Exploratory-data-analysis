@@ -1,5 +1,5 @@
 Self Driving Car.v3-fixed-small.coco/
-
+outputs/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
