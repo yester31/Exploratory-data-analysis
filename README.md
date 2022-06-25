@@ -58,7 +58,10 @@
       coco.show_bar_chart_box_by_image_descending()
   ![](figs/bar_chart_box_by_image_descending.png)
 
+- Scatter chart of bounding box height & width
 
+      coco.show_scatter_chart_height_width_all()
+  ![](figs/scatter_chart_height_width_all.png)
 
 ## 3. Dataset edit
 

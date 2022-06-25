@@ -14,7 +14,6 @@ color_map = [(244, 67, 54), (233, 30, 99), (156, 39, 176), (103, 58, 183), (63, 
 class CocoAnalysis:
     def __init__(self, anno_path, img_dir_path):
         print('init CocoAnalysis')
-
         if not os.path.exists('outputs'):  # 저장할 폴더가 없다면
             os.makedirs('outputs')  # 폴더 생성
             print('make directory {} is done'.format('outputs'))
@@ -42,17 +41,22 @@ class CocoAnalysis:
                     self.dic_imgid_img[img['id']] = img
                     self.dic_imgid_annos[img['id']] = []
 
+
                 self.dic_cateid_cate = {}
                 for cate in tqdm(self.categories):
                     self.dic_cateid_cate[cate['id']] = cate
 
                 self.boxes_by_class = np.zeros(len(self.categories))
                 self.box_areas = np.zeros(len(self.annotations))
+                self.box_heights = []
+                self.box_widths = []
                 for a_idx, anno in tqdm(enumerate(self.annotations)):
                     self.dic_imgid_anno_cnt[anno['image_id']] += 1
                     self.dic_imgid_annos[anno['image_id']].append(anno)
                     self.boxes_by_class[anno['category_id']] += 1
                     self.box_areas[a_idx] = anno['area']
+                    self.box_widths.append(anno['bbox'][2])
+                    self.box_heights.append(anno['bbox'][3])
 
                 # 각 박스 사이즈 내림 정렬
                 self.rev_area_idx = np.argsort(self.box_areas)[::-1]
@@ -61,6 +65,8 @@ class CocoAnalysis:
 
         else:  # anno_path 파일이 없다면
             print('Check the annotation file path!!!')
+
+    # visualization images ============================================
 
     # random 으로 5개의 이미지를 바운딩 박스와 함께 출력
     def show_random_img_all(self, save=False):
@@ -181,6 +187,10 @@ class CocoAnalysis:
             plt.savefig('./outputs/small_anno_5_images.png', dpi=100)
         plt.show()
 
+    # visualization images ============================================
+
+    # chart ============================================
+
     # 이미지 별로 바운딩 박스 개수를 박스 차트로 출력
     def show_bar_chart_box_by_image(self, save=False):
         image_list = self.dic_imgid_anno_cnt.items()
@@ -250,6 +260,22 @@ class CocoAnalysis:
             plt.savefig('./outputs/bar_chart_box_by_class.png', dpi=100)
         plt.show()
 
+    # 바운딩 박스 height width 산포도 차트 출력
+    def show_scatter_chart_height_width_all(self, save=False):
+        plt.scatter(self.box_widths, self.box_heights, s=0.5)
+        plt.vlines(256, 0, 512, color='red', linestyle='solid', linewidth=2)
+        plt.hlines(256, 0, 512, color='red', linestyle='solid', linewidth=2)
+        plt.ylabel('height', fontsize=15)
+        plt.xlabel('width', fontsize=15)
+        plt.title('Scatter distribution of box height & width', fontsize=20)
+        #plt.tight_layout()  # 여백 조정
+        #plt.margins(x=0, y=0)  # 그래프 마진 지우기
+        if save:
+            plt.savefig('./outputs/scatter_chart_height_width_all.png', dpi=100)
+        plt.show()
+
+
+    # chart ============================================
 
 if __name__ == "__main__":
     anno_path = 'Self Driving Car.v3-fixed-small.coco/export/_annotations.coco.json'
@@ -261,6 +287,7 @@ if __name__ == "__main__":
     # coco.show_big_annos()
     # coco.show_small_annos()
 
-    #coco.show_bar_chart_box_by_class()
+    # coco.show_bar_chart_box_by_class(True)
     # coco.show_bar_chart_box_by_image()
     # coco.show_bar_chart_box_by_image_descending()
+    # coco.show_scatter_chart_height_width_all()

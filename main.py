@@ -30,3 +30,5 @@ if __name__ == "__main__":
     coco.show_bar_chart_box_by_image()
     # 이미지 별로 바운딩 박스 개수를 (내림차순으로) 박스 차트로 출력
     coco.show_bar_chart_box_by_image_descending()
+    # 바운딩 박스의 가로 세로 길이를 산포도로 출력
+    coco.show_scatter_chart_height_width_all()
